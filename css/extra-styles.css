@@ -1,0 +1,76 @@
+#header_top, #c_menu {
+   /*SNCF Carbone*/
+   background-color: rgb(60, 55, 50);
+}
+
+#header #c_logo {
+   /*SNCF Logo*/
+   position: absolute;
+   z-index: 1000;
+   width: 130px;
+   height: 75px;
+   float: left;
+   left: 5px;
+   background: url("alternate-logo.png") 0 0 repeat-x;
+}
+
+#plugin_formcreator_serviceCatalog #header_top {
+   height: 65px;
+   line-height: 65px;
+   position: relative;
+   z-index: 10;
+}
+.formcreator_header_top#header_top {
+   margin-left:  300px;
+   width: calc(100vw - 300px);
+   text-align: right;
+   color: #FFF;
+   z-index: 50;
+   transition: .3s;
+}
+
+
+.formcreator-nav-button {
+   z-index: 1;
+   height: 1.5rem; width: 1.8rem;
+   background-color: transparent;
+   background-image: linear-gradient(to right, #FFF, #FFF),
+     linear-gradient(to right, #FFF, #FFF),
+     linear-gradient(to right, #FFF, #FFF);
+   background-position: center top, center, center bottom;
+   background-repeat: no-repeat;
+   background-size: 3.5rem .3rem;
+   padding: 0;
+   outline: 0;
+   border: 0;
+   cursor: pointer;
+   -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+#formcreator-toggle-nav-desktop ~ .formcreator-nav-button {
+   margin: 10px 0 0 10px;
+   position: absolute;
+   left: 130px;
+   top: 25px;
+   z-index: 15;
+   transition: .4s;
+}
+
+.toggle_menu #formcreator-toggle-nav-desktop ~ .formcreator-nav-button {
+   left: 50px;
+}
+
+#formcreator_servicecatalogue_ticket_summary {
+   margin: 5px 60px 0 5px;
+   height: inherit;
+   position: absolute;
+   z-index: 15;
+   left: 180px;
+   width: 260px;
+   top: 25px;
+   transition: .4s;
+   height: 1rem;
+}
+#formcreator_servicecatalogue_ticket_summary .status {
+   /*SNCF Carbone*/
+   background-color: rgba(60, 55, 50, .15);
+}

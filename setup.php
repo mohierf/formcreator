@@ -44,7 +44,19 @@ define ('PLUGIN_FORMCREATOR_GLPI_MIN_VERSION', '9.2.1');
 // Maximum GLPI version, exclusive
 define ('PLUGIN_FORMCREATOR_GLPI_MAX_VERSION', '9.4');
 
+define('FORMCREATOR_PATH', '/plugins/formcreator');
 define('FORMCREATOR_ROOTDOC', $CFG_GLPI['root_doc'] . '/plugins/formcreator');
+
+if (!defined("FORMCREATOR_DOC_DIR")) {
+   define("FORMCREATOR_DOC_DIR", GLPI_PLUGIN_DOC_DIR . "/formcreator");
+}
+if (!file_exists(FORMCREATOR_DOC_DIR)) {
+   mkdir(FORMCREATOR_DOC_DIR);
+}
+if (!defined("FORMCREATOR_DOC_URL")) {
+   $dir = str_replace(GLPI_VAR_DIR, '', GLPI_PLUGIN_DOC_DIR);
+   define('FORMCREATOR_DOC_URL', '../../files' . $dir . '/formcreator');
+}
 
 // Plugin global configuration
 $_SESSION['plugin_formcretor'] = [];
@@ -107,6 +119,21 @@ function plugin_init_formcreator() {
 
    // Add specific CSS
    $PLUGIN_HOOKS['add_css']['formcreator'][] = "css/styles.css";
+   /**
+    * Load the relevant javascript/css files only if the services catalog is used rather than the usual Helpdesk
+   */
+   if (plugin_formcreator_replaceHelpdesk()) {
+      $PLUGIN_HOOKS['add_css']['formcreator'][] = 'css/extra-styles.css';
+   }
+
+
+   // Load customisation css file only if the services catalog is used rather than the usual Helpdesk
+   if (is_file(FORMCREATOR_DOC_DIR . '/extra-styles.css')) {
+      if (plugin_formcreator_replaceHelpdesk()) {
+//         Toolbox::logInFile("pfc", "CSS dir: " . FORMCREATOR_DOC_URL . '/extra-styles.css' . PHP_EOL);
+         $PLUGIN_HOOKS['add_css']['formcreator'][] = FORMCREATOR_DOC_URL . '/extra-styles.css';
+      }
+   }
 
    // Hack for vertical display
    if (isset($CFG_GLPI['layout_excluded_pages'])) {
@@ -287,6 +314,9 @@ function plugin_formcreator_decode($string) {
  * Tells if helpdesk replacement is enabled for the current user
  */
 function plugin_formcreator_replaceHelpdesk() {
+   if (! class_exists('PluginFormcreatorEntityconfig')) {
+      return false;
+   }
    if (isset($_SESSION['glpiactiveprofile']['interface'])
          && isset($_SESSION['glpiactive_entity'])) {
       // Interface and active entity are set in session

@@ -297,6 +297,9 @@ class PluginFormcreatorEntityconfig extends CommonDBTM {
          return;
       }
 
+      if (! isset($_SESSION['glpiactive_entity'])) {
+         return;
+      }
       // Get global configuration parameters
       $_SESSION['plugin_formcretor']['tickets_summary'] = self::getUsedConfig('tickets_summary',
          $_SESSION['glpiactive_entity']);

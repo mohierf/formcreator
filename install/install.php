@@ -259,6 +259,7 @@ class PluginFormcreatorInstall {
          $DB->query($query) or die ($DB->error());
       }
 
+      /*
       $displayprefs = new DisplayPreference;
       $found_dprefs = $displayprefs->find("`itemtype` = 'PluginFormcreatorIssue'");
       if (count($found_dprefs) == 0) {
@@ -271,6 +272,20 @@ class PluginFormcreatorInstall {
                    (NULL, 'PluginFormcreatorIssue', 6, 5, 0),
                    (NULL, 'PluginFormcreatorIssue', 7, 6, 0),
                    (NULL, 'PluginFormcreatorIssue', 8, 7, 0)";
+         $DB->query($query) or die ($DB->error());
+      }
+      */
+      /* SNCF Portail - anonymiser la liste des issues */
+      $displayprefs = new DisplayPreference;
+      $found_dprefs = $displayprefs->find("`itemtype` = 'PluginFormcreatorIssue'");
+      if (count($found_dprefs) == 0) {
+         $query = "INSERT IGNORE INTO `glpi_displaypreferences`
+                   (`id`, `itemtype`, `num`, `rank`, `users_id`) VALUES
+                   (NULL, 'PluginFormcreatorIssue', 1, 1, 0),
+                   (NULL, 'PluginFormcreatorIssue', 4, 3, 0),
+                   (NULL, 'PluginFormcreatorIssue', 5, 4, 0),
+                   (NULL, 'PluginFormcreatorIssue', 6, 5, 0),
+                   (NULL, 'PluginFormcreatorIssue', 7, 6, 0)";
          $DB->query($query) or die ($DB->error());
       }
    }
