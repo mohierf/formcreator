@@ -38,8 +38,6 @@ if (!defined('GLPI_ROOT')) {
 abstract class PluginFormcreatorTargetBase extends CommonDBTM implements PluginFormcreatorExportableInterface
 {
 
-   protected $materials = [];
-
    protected $requesters;
 
    protected $observers;
@@ -865,9 +863,6 @@ EOS;
       $questions = (new PluginFormcreatorQuestion())
          ->getQuestionsFromForm($formanswer->getField($formFk));
 
-      // Reset linked materials
-      $this->materials = [];
-
       $fields = [];
 
       // Prepare all fields of the form
@@ -881,7 +876,6 @@ EOS;
       }
 
       foreach ($questions as $questionId => $question) {
-         Toolbox::logInFile("pfc", "Question: $questionId" . PHP_EOL);
          if (!PluginFormcreatorFields::isVisible($questionId, $fields)) {
             $name = '';
             $value = '';
@@ -895,20 +889,7 @@ EOS;
          foreach ($fields[$questionId]->getDocumentsForTarget() as $documentId) {
             $this->addAttachedDocument($documentId);
          }
-         if ($question->getField('fieldtype') === 'glpiselect') {
-            Toolbox::logInFile("pfc", "Question: $questionId, : " . serialize($fields[$questionId]) . PHP_EOL);
-            $itemtype = $question->getField('values');
-            $items_id = $fields[$questionId]->getValueForTarget();
-//            $items_id = $question['value'];
-            Toolbox::logInFile("pfc", "Question: $questionId, item type: $itemtype, id: $items_id, value = $value" . PHP_EOL);
-
-            $this->materials[] = [
-               "itemtype" => $itemtype,
-               "items_id" => $items_id,
-               "value" => $value];
-//            Toolbox::logInFile("pfc", "Materials : " . serialize($this->materials) . PHP_EOL);
-
-         } else if ($question->getField('fieldtype') !== 'file') {
+         if ($question->getField('fieldtype') !== 'file') {
             if (is_array($value)) {
                if (version_compare(PluginFormcreatorCommon::getGlpiVersion(), 9.4) >= 0 || $CFG_GLPI['use_rich_text']) {
                   $value = '<br />' . implode('<br />', $value);

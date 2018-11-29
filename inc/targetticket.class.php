@@ -1021,8 +1021,6 @@ EOS;
    public function save(PluginFormcreatorForm_Answer $formanswer) {
       global $DB, $CFG_GLPI;
 
-      Toolbox::logInFile("pfc", "Save form" . PHP_EOL);
-
       // Prepare actors structures for creation of the ticket
       $this->requesters = [
          '_users_id_requester'         => [],
@@ -1148,11 +1146,6 @@ EOS;
             $this->requesters['_users_id_requester'] = array_pop($this->requesters['_users_id_requester']);
          }
       }
-
-      Toolbox::logInFile("pfc", "Check associated assets" . PHP_EOL);
-      // When data have been parsed, the materials array contain information about the selected material in the form
-      Toolbox::logInFile("pfc", "Materials : " . serialize($this->materials) . PHP_EOL);
-      die();
 
       // Computation of the entity
       switch ($this->fields['destination_entity']) {
