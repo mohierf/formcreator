@@ -10,37 +10,97 @@ Lorsque l'utilisateur est authentifié, il accède au portail qui se présente s
  - un bandeau haut
  - un menu latéral
  - une zone de contenu variable selon la consultation en cours.
+
+ img: portail-00.png
   
 ### Bandeau haut
-Le bandeau haut présente 
+Le bandeau haut présente:
+ - le logo SNCF et le nom de l'application
+ - le nom de l'utilisateur connecté
+ - le bouton de déconnexion
+
+Lorsque l'utilisateur souhaite quitter le portail, il lui suffit simplement de ferler la fenêtre ou l'onglet de son navigateur. Il peut également cliquer sur le bouton de déconnexion situé complètement à droite du bandeau haut.
+
+Immédiatement à droite du logo et à gauche du titre de l'application, un bouton permet de replier le menu latéral de façon à agrandir la zone de contenu de la page. Ceci peut être particulièrement utile pour un utilisateur qui ne dispose que d'un écran de taille moyenne. Sur un écran de petite taille (eg. Smartphone), la page est systématiquement présentée avec le menu replié.
+
+ img: portail-00-2.png
+
 ### Menu latéral
+Le menu latéral présente les choix qui sont proposés à l'utilisateur connecté.
+
+Le portail permet à l'utilisateur connecté de :
+ - demander une assistance
+ - consulter les demandes qu'il a déjà formulées
+ - consulter toutes les demandes en cours
+ 
+Ces princpales fonctionnalités sont documentées dans le chapitre suivant.
 
 
 ## Fonctionnalités
-### Signaler un incident
+### Formuler une demande
+
+Le choix "Demander une assistance" est le choix par défaut présenté à l'utilisateur lors de sa connexion. La zone de contenu du portail présente alors : 
+
+ - les catégories de demandes disponibles - à gauche
+ - un moteur de recherche - en haut 
+ - la liste des formulaires utilisables - en bas à droite
+
+ img portail-01-1.png
+
+L'objectif est de permettre à l'utilisateur de choisir facilement le formulaire adapté à sa demande. Pour cela il peut naviguer dans les catégories disponibles ou rechercher un texte.
+
+Les formulaires présentés sur cette page sont présentés de façon à ce que les plus fréquemment utilisés soitent proposée en premier à l'utilisateur.
+
+#### Arborescence des catégories
+
+Naviguer dans les catégories proposées permet d'affiner la sélection et de réduire la liste des formulaires. En cliquant sur le nom d'une catégorie, le portail présente la liste des formulaires de cette catégorie et, s'il en existe, les sous catégories disponibles.
+
+Cliquer sur "Voir tous" ramène l'utilisateur au sommet de l'arboescence des catégories.
+
+ img portail-01-1.png
+
+   Ici on voit que seule la catégorie "3 - Autres demandes" propose des sous catégories.
+
+ img portail-01-2.png
+
+   Ici on voit que l'utilisateur a sélectionné la catégorie "3 - Autres demandes" et que le portail ne propose plus que deux formulaires.
+
+
+#### Moteur de recherche
+
+Le moteur de recherche permet à l'utilisateur de saisir un ou des mots qui vont être recherchés dans les intitulés des formulaires disponibles pour affiner la liste des formulaires proposés.
+
+ img portail-01-3.png
+
+   Ici on voit que l'utilisateur a saisi "vid" dans le moteur de recherche et que le portail ne propose plus qu'un seul formulaire.
+
+
 ### Consulter mes incidents 
+
+Le choix "Consulter mes incidents" permet à l'utilisateur d'accéder à la liste de tous les incidents qu'il a lui-même signalé. La zone de contenu du portail présente alors une liste des incidents avec, pour chacun d'eux: son état, son titre, la date de son ouverture, ... [à compléter]
+
+ img portail-02-1.png
+
+La liste des incidents présentée par défaut est la liste des incidents ouverts par l'utilisateur connecté
+
+Cliquer sur le titre d'une des colonnes trie la liste des incidents selon le contenu de cette colonne (tri ascendant=). Un nouveau clic sur le même titre inverse le sens du tri (tri descendant). 
+
+Au dessus de cette liste, un moteur de recherche permet à l'utilisateur d'affiner la présentation en modifiant les critères de recherche.
+
+#### Moteur de recherche
+
+Le moteur de recherche permet à l'utilisateur de saisir un ou des mots qui vont être recherchés dans les intitulés des formulaires disponibles pour affiner la liste des formulaires proposés.
+
+
+
 ### Consulter tous les incidents 
+
+Le choix "Consulter tous les incidents" permet à l'utilisateur d'accéder à la liste de tous les incidents actuellement en cours pour l'ensemble des gares.
+
+
+
+
 ### Consulter l'aide en ligne
-Le menu La consultation de 
 
+Le choix Aide en ligne du menu ouvre une nouvelle page ou un nouvel onglet dans le navigateur de l'utiilsateur pour lui présenter l'aide à l'utilisation du portail. Il s'agit d'un document Pdf que l'utilisateur pourra consulter mais également télécharger grâce à son navigateur.
 
-# Echanges
-
-14/11:
-Bonjour
-
-Les logos que vous nous avez communiqués n’incluent pas la transparence de fond.
-1/ Pour le logo G&C, la version RVB du logo est un Jpeg sans transparence. Il existe bien une version CMJN mais c’est normalement ce qu’on utilise pour l’imprimerie, pas pour le Web.
-2/  Pour le logo SNCF, j’ai vu que le logo SNCF se présentait avec un cadre blanc lorsqu’il était sur un fond coloré. J’ai donc laissé ce fond blanc qui produit un effet d’encadrement.
-Si vous souhaitez une gestion de la transparence, pas de soucis pour cela, il suffit de me fournir les fichiers au format PNG avec la transparence de fond et je remplacerai les fichiers que j’ai actuellement
-
-14/11:
-En pièce jointe, une capture de la version actuelle (Portail_SNCF.png) et 3 captures de l’interface standard Glpi. Le fichier -0.png correspond à la palette par défaut des utilisateurs. Chaque utilisateur ayant la possibilité de choisir parmi plusieurs palettes de couleur (fonction désactivée dans le portail). Les fichiers -1.png et -2.png sont deux variations parmi la vingtaine disponible.
-
- 
-
-Pour ce qui est des éléments textuels, la police Web utilisée est la famille ‘Bitstream Vera sans’ qui utilise, en principe, sur un poste Windows une police Verdana, sinon Tahoma, sinon Sans Serif. Sur tous les PC récents, le rendu devrait être avec la police Verdana qui est un police standard sur de nombreux systèmes et bien adaptée à la lecture sur écran.
-
- 
-
-Les modifications que j’ai réalisée sur les coloris se limitent à l’utilisation du Noir Carbone de la charte SNCF pour les aplats de couleur utilisés normalement par Glpi. Le choix de cette couleur permet de conserver une bonne lisibilité des menus qui peuvent rester à utiliser une police de caractères blanche.

@@ -7,25 +7,25 @@
    /*SNCF Logo*/
    position: absolute;
    z-index: 1000;
-   /*
-   Logo SNCF
+   /* Logo SNCF */
    width: 130px;
-   */
-   /* Logo G&C */
+
+   /* Logo G&C
    width: 260px;
+   */
    height: 75px;
    float: left;
    left: 5px;
-   /*
    background: url("logo_SNCF_trans.png") 0 0 no-repeat;
-    */
    /*
    background: url("logo_G&C_trans.png") 0 0 no-repeat;
     */
    /*
    background: url("logo_SNCF_blanc.png") 0 0 no-repeat;
     */
+   /*
    background: url("logo_G&C_blanc.png") 0 0 no-repeat;
+    */
    background-size: contain;
 }
 
@@ -89,14 +89,11 @@
 #formcreator-toggle-nav-desktop ~ .formcreator-nav-button {
    margin: 10px 0 0 10px;
    position: absolute;
-   /*
-   Logo SNCF
-   left: 130px;
-    */
-   /*
-   Logo G&C
-    */
-   left: 260px;
+   /* Logo SNCF */
+   left: 140px;
+   /* Logo G&C
+   left: 270px;
+   */
    top: 25px;
    z-index: 15;
    transition: .4s;
@@ -106,14 +103,11 @@
 #formcreator-toggle-nav-desktop ~ .formcreator-nav-text {
    margin: 10px 0 0 10px;
    position: absolute;
-   /*
-   Logo SNCF
-   left: 130px;
-    */
-   /*
-   Logo G&C
-    */
-   left: 320px;
+   /* Logo SNCF */
+   left: 190px;
+   /* Logo G&C
+   left: 3200px;
+   */
    top: 25px;
    z-index: 15;
    transition: .4s;
