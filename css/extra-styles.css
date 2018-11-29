@@ -1,10 +1,8 @@
 #header_top, #c_menu {
-   /*SNCF Carbone*/
    background-color: rgb(60, 55, 50);
 }
 
 #header #c_logo {
-   /*SNCF Logo*/
    position: absolute;
    z-index: 1000;
    width: 130px;
@@ -71,6 +69,5 @@
    height: 1rem;
 }
 #formcreator_servicecatalogue_ticket_summary .status {
-   /*SNCF Carbone*/
    background-color: rgba(60, 55, 50, .15);
 }

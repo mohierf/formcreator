@@ -83,6 +83,8 @@ class PluginFormcreatorWizard {
       // menu toggle (desktop mode)
       echo "<input type='checkbox' id='formcreator-toggle-nav-desktop'>";
       echo "<label for='formcreator-toggle-nav-desktop' class='formcreator-nav-button'></label>";
+      /* SNCF - application title */
+      echo "<label for='formcreator-toggle-nav-desktop' class='formcreator-nav-text'>Bienvenue sur le portail de l'@.U Gares</label>";
 
       if ($_SESSION['plugin_formcretor']['tickets_summary']) {
          self::showTicketSummary();
@@ -105,7 +107,10 @@ class PluginFormcreatorWizard {
 
       echo '<li class="' . ($activeMenuItem == self::MENU_LAST_FORMS ? 'plugin_formcreator_selectedMenuItem' : '') . '">';
       echo '<a href="' . $CFG_GLPI["root_doc"].'/plugins/formcreator/front/issue.php?reset=reset' . '">';
+      /* SNCF - menu title V1
       echo '<span class="fa fa-list fc_list_icon" title="'.__('My requests for assistance', 'formcreator').'"></span>';
+      */
+      echo '<span class="fa fa-list fc_list_icon" title="'.__('Incidents nationaux', 'formcreator').'"></span>';
       echo '<span class="label">'.__('My requests for assistance', 'formcreator').'</span>';
       echo '</a></li>';
 
@@ -131,6 +136,7 @@ class PluginFormcreatorWizard {
          echo '</a></li>';
       }
 
+      /* SNCF - Hide saved searches
       $query = "SELECT `glpi_savedsearches`.*,
                        `glpi_savedsearches_users`.`id` AS IS_DEFAULT
                 FROM `glpi_savedsearches`
@@ -167,6 +173,7 @@ class PluginFormcreatorWizard {
             echo '</li>';
          }
       }
+      */
 
       $link = new Link;
       $ar_links = $link->find("name LIKE '". $_SESSION['plugin_formcretor']['external_links_prefix'] ."%'");

@@ -1,0 +1,156 @@
+#header_top, #c_menu {
+   /*SNCF Carbone*/
+   background-color: rgb(51, 51, 51);
+}
+
+#header #c_logo {
+   /*SNCF Logo*/
+   position: absolute;
+   z-index: 1000;
+   /*
+   Logo SNCF
+   width: 130px;
+   */
+   /* Logo G&C */
+   width: 260px;
+   height: 75px;
+   float: left;
+   left: 5px;
+   /*
+   background: url("logo_SNCF_trans.png") 0 0 no-repeat;
+    */
+   /*
+   background: url("logo_G&C_trans.png") 0 0 no-repeat;
+    */
+   /*
+   background: url("logo_SNCF_blanc.png") 0 0 no-repeat;
+    */
+   background: url("logo_G&C_blanc.png") 0 0 no-repeat;
+   background-size: contain;
+}
+
+#plugin_formcreator_serviceCatalog #header_top {
+   height: 65px;
+   line-height: 65px;
+   position: relative;
+   z-index: 10;
+}
+.formcreator_header_top #header_top {
+   margin-left:  300px;
+   width: calc(100vw - 300px);
+   text-align: right;
+   color: #FFF;
+   z-index: 50;
+   transition: .3s;
+}
+
+
+#formcreator-toggle-nav-desktop{
+   /* Hide menu toggle
+   display:none;
+   */
+}
+.formcreator-nav-button {
+   /* Hide menu toggle
+   display:none;
+   */
+
+   z-index: 1;
+   height: 1.5rem; width: 1.8rem;
+   background-color: transparent;
+   background-image: linear-gradient(to right, #FFF, #FFF),
+     linear-gradient(to right, #FFF, #FFF),
+     linear-gradient(to right, #FFF, #FFF);
+   background-position: center top, center, center bottom;
+   background-repeat: no-repeat;
+   background-size: 3.5rem .3rem;
+   padding: 0;
+   outline: 0;
+   border: 0;
+   cursor: pointer;
+   -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+.formcreator-nav-text {
+   /* Hide menu toggle
+   display:none;
+   */
+
+   z-index: 1;
+   height: 1.5rem; width: 500px;
+   font-size: 2em;
+   background-color: transparent;
+   padding: 0;
+   outline: 0;
+   border: 0;
+   cursor: pointer;
+   color: white;
+   -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+#formcreator-toggle-nav-desktop ~ .formcreator-nav-button {
+   margin: 10px 0 0 10px;
+   position: absolute;
+   /*
+   Logo SNCF
+   left: 130px;
+    */
+   /*
+   Logo G&C
+    */
+   left: 260px;
+   top: 25px;
+   z-index: 15;
+   transition: .4s;
+
+   background-color: transparent;
+}
+#formcreator-toggle-nav-desktop ~ .formcreator-nav-text {
+   margin: 10px 0 0 10px;
+   position: absolute;
+   /*
+   Logo SNCF
+   left: 130px;
+    */
+   /*
+   Logo G&C
+    */
+   left: 320px;
+   top: 25px;
+   z-index: 15;
+   transition: .4s;
+
+   background-color: transparent;
+}
+
+/* When the menu is toggled */
+.toggle_menu #formcreator-toggle-nav-desktop ~ #header_top>div {
+   /* Hide the logo */
+   visibility: hidden;
+}
+.toggle_menu #formcreator-toggle-nav-desktop ~ .formcreator-nav-button {
+   /* Move toggle button to the left */
+   left: 5px;
+}
+.toggle_menu #formcreator-toggle-nav-desktop ~ .formcreator-nav-text {
+   /* Move title to the left*/
+   left: 60px;
+}
+
+/* Look tickets summary */
+#formcreator_servicecatalogue_ticket_summary {
+   margin: 5px 60px 0 5px;
+   position: absolute;
+   z-index: 15;
+   left: 180px;
+   width: 260px;
+   top: 25px;
+   transition: .4s;
+   height: 1rem;
+}
+#formcreator_servicecatalogue_ticket_summary .status {
+   background-color: rgba(51, 51, 51, .15);
+}
+
+/* User name */
+.plugin_formcreator_user_name {
+   font-size: large;
+}

@@ -123,17 +123,19 @@ function plugin_init_formcreator() {
     * Load the relevant javascript/css files only if the services catalog is used rather than the usual Helpdesk
    */
    if (plugin_formcreator_replaceHelpdesk()) {
-      $PLUGIN_HOOKS['add_css']['formcreator'][] = 'css/extra-styles.css';
+      $PLUGIN_HOOKS['add_css']['formcreator'][] = 'css/custom/extra-styles.css';
    }
 
 
    // Load customisation css file only if the services catalog is used rather than the usual Helpdesk
+   /*
    if (is_file(FORMCREATOR_DOC_DIR . '/extra-styles.css')) {
       if (plugin_formcreator_replaceHelpdesk()) {
 //         Toolbox::logInFile("pfc", "CSS dir: " . FORMCREATOR_DOC_URL . '/extra-styles.css' . PHP_EOL);
          $PLUGIN_HOOKS['add_css']['formcreator'][] = FORMCREATOR_DOC_URL . '/extra-styles.css';
       }
    }
+   */
 
    // Hack for vertical display
    if (isset($CFG_GLPI['layout_excluded_pages'])) {
