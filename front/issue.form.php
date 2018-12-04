@@ -56,7 +56,7 @@ if (isset($_POST['save_formanswer'])) {
 } else {
 
    if (plugin_formcreator_replaceHelpdesk()) {
-      PluginFormcreatorWizard::header(__('Service catalog', 'formcreator'));
+      PluginFormcreatorWizard::header(__('Portail de l\'@.U Gares,', 'formcreator'));
    } else {
       Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
    }
