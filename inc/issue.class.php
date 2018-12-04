@@ -182,6 +182,387 @@ class PluginFormcreatorIssue extends CommonDBTM {
 
    }
 
+
+   /**
+    * @since 0.90
+    *
+    * @param $rand
+    **/
+   function showTimeline($the_ticket, $rand) {
+      global $CFG_GLPI, $DB, $autolink_options;
+
+      $user              = new User();
+      $group             = new Group();
+      $followup_obj      = new TicketFollowup();
+      $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
+      $timeline          = $the_ticket->getTimelineItems();
+
+      $autolink_options['strip_protocols'] = false;
+
+      //display timeline
+      echo "<div class='timeline_history'>";
+
+//      // show approbation form on top when ticket is solved
+//      if ($the_ticket->fields["status"] == CommonITILObject::SOLVED) {
+//         echo "<div class='approbation_form' id='approbation_form$rand'>";
+//         $followup_obj->showApprobationForm($the_ticket);
+//         echo "</div>";
+//      }
+
+      // show title for timeline
+//      self::showTimelineHeader();
+
+      $timeline_index = 0;
+      foreach ($timeline as $item) {
+         $options = [ 'parent' => $the_ticket,
+            'rand' => $rand
+         ];
+         if ($obj = getItemForItemtype($item['type'])) {
+            $obj->fields = $item['item'];
+         } else {
+            $obj = $item;
+         }
+         Plugin::doHook('pre_show_item', ['item' => $obj, 'options' => &$options]);
+
+         if (is_array($obj)) {
+            $item_i = $obj['item'];
+         } else {
+            $item_i = $obj->fields;
+         }
+
+         $date = "";
+         if (isset($item_i['date'])) {
+            $date = $item_i['date'];
+         } else if (isset($item_i['date_mod'])) {
+            $date = $item_i['date_mod'];
+         }
+
+         // set item position depending on field timeline_position
+         $user_position = 'left'; // default position
+         if (isset($item_i['timeline_position'])) {
+            switch ($item_i['timeline_position']) {
+               case Ticket::TIMELINE_LEFT:
+                  $user_position = 'left';
+                  break;
+               case Ticket::TIMELINE_MIDLEFT:
+                  $user_position = 'left middle';
+                  break;
+               case Ticket::TIMELINE_MIDRIGHT:
+                  $user_position = 'right middle';
+                  break;
+               case Ticket::TIMELINE_RIGHT:
+                  $user_position = 'right';
+                  break;
+            }
+         }
+
+         //display solution in middle
+         if (($item['type'] == "Solution") && $item_i['status'] != CommonITILValidation::REFUSED
+            && in_array($the_ticket->fields["status"], [CommonITILObject::SOLVED, CommonITILObject::CLOSED])) {
+            $user_position.= ' middle';
+         }
+
+         echo "<div class='h_item $user_position'>";
+
+         echo "<div class='h_info'>";
+
+         echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($date)."</div>";
+         if ($item_i['users_id'] !== false) {
+            echo "<div class='h_user'>";
+//            if (isset($item_i['users_id']) && ($item_i['users_id'] != 0)) {
+//               $user->getFromDB($item_i['users_id']);
+//
+//               echo "<div class='tooltip_picture_border'>";
+//               echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+//                      User::getThumbnailURLForPicture($user->fields['picture'])."'>";
+//               echo "</div>";
+
+//               echo "<span class='h_user_name'>";
+//               $userdata = getUserName($item_i['users_id'], 2);
+//               echo $user->getLink()."&nbsp;";
+//               echo Html::showToolTip($userdata["comment"],
+//                                      ['link' => $userdata['link']]);
+//               echo "</span>";
+//            } else {
+//               echo __("Requester");
+//            }
+            echo __("Requester");
+            echo "</div>"; // h_user
+         }
+
+         echo "</div>"; //h_info
+
+         $domid = "viewitem{$item['type']}{$item_i['id']}";
+         if ($item['type'] == 'TicketValidation' && isset($item_i['status'])) {
+            $domid .= $item_i['status'];
+         }
+         $domid .= $rand;
+
+         $fa = null;
+         $class = "h_content {$item['type']}";
+         if ($item['type'] == 'Solution') {
+            switch ($item_i['status']) {
+               case CommonITILValidation::WAITING:
+                  $fa = 'question';
+                  $class .= ' waiting';
+                  break;
+               case CommonITILValidation::ACCEPTED:
+                  $fa = 'thumbs-up';
+                  $class .= ' accepted';
+                  break;
+               case CommonITILValidation::REFUSED:
+                  $fa = 'thumbs-down';
+                  $class .= ' refused';
+                  break;
+            }
+         } else if (isset($item_i['status'])) {
+            $class .= " {$item_i['status']}";
+         }
+
+         echo "<div class='$class' id='$domid'>";
+         if ($fa !== null) {
+            echo "<i class='solimg fa fa-$fa fa-5x'></i>";
+         }
+         if (isset($item_i['can_edit']) && $item_i['can_edit']) {
+            echo "<div class='edit_item_content'></div>";
+            echo "<span class='cancel_edit_item_content'></span>";
+         }
+         echo "<div class='displayed_content'>";
+         if (!in_array($item['type'], ['Document_Item', 'Assign'])
+            && $item_i['can_edit']) {
+            echo "<span class='fa fa-pencil-square-o edit_item' ";
+            echo "onclick='javascript:viewEditSubitem".$the_ticket->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"$domid\")'";
+            echo "></span>";
+         }
+         if (isset($item_i['requesttypes_id'])
+            && file_exists("$pics_url/".$item_i['requesttypes_id'].".png")) {
+            echo "<img src='$pics_url/".$item_i['requesttypes_id'].".png' class='h_requesttype' />";
+         }
+
+         if (isset($item_i['content'])) {
+            $content = $item_i['content'];
+            $content = Toolbox::getHtmlToDisplay($content);
+            $content = autolink($content, false);
+
+            $long_text = "";
+            if ((substr_count($content, "<br") > 30) || (strlen($content) > 2000)) {
+               $long_text = "long_text";
+            }
+
+            echo "<div class='item_content $long_text'>";
+            echo "<p>";
+            if (isset($item_i['state'])) {
+               $onClick = "onclick='change_task_state(".$item_i['id'].", this)'";
+               if (!$item_i['can_edit']) {
+                  $onClick = "style='cursor: not-allowed;'";
+               }
+               echo "<span class='state state_".$item_i['state']."'
+                           $onClick
+                           title='".Planning::getState($item_i['state'])."'>";
+               echo "</span>";
+            }
+            echo "</p>";
+
+            if ($CFG_GLPI["use_rich_text"]) {
+               echo "<div class='rich_text_container'>";
+               echo html_entity_decode($content);
+               echo "</div>";
+            } else {
+               echo "<p>$content</p>";
+            }
+
+            if (!empty($long_text)) {
+               echo "<p class='read_more'>";
+               echo "<a class='read_more_button'>.....</a>";
+               echo "</p>";
+            }
+            echo "</div>";
+         }
+
+         echo "<div class='b_right'>";
+         if (isset($item_i['solutiontypes_id']) && !empty($item_i['solutiontypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_solutiontypes", $item_i['solutiontypes_id'])."<br>";
+         }
+         if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
+            echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
+         }
+         if (isset($item_i['requesttypes_id']) && !empty($item_i['requesttypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_requesttypes", $item_i['requesttypes_id'])."<br>";
+         }
+
+         if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
+            echo "<span class='actiontime'>";
+            echo Html::timestampToString($item_i['actiontime'], false);
+            echo "</span>";
+         }
+         if (isset($item_i['begin'])) {
+            echo "<span class='planification'>";
+            echo Html::convDateTime($item_i["begin"]);
+            echo " &rArr; ";
+            echo Html::convDateTime($item_i["end"]);
+            echo "</span>";
+         }
+//         if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
+//            echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
+//            $user->getFromDB($item_i['users_id_tech']);
+//            echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+//            $userdata = getUserName($item_i['users_id_tech'], 2);
+//            echo $user->getLink()."&nbsp;";
+//            echo Html::showToolTip($userdata["comment"],
+//                                   ['link' => $userdata['link']]);
+//            echo "</div>";
+//         }
+//         if (isset($item_i['groups_id_tech']) && ($item_i['groups_id_tech'] > 0)) {
+//            echo "<div class='groups_id_tech'>";
+//            $group->getFromDB($item_i['groups_id_tech']);
+//            echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
+//            echo $group->getLink()."&nbsp;";
+//            echo Html::showToolTip($group->getComments(),
+//                                   ['link' => $group->getLinkURL()]);
+//            echo "</div>";
+//         }
+//         if (isset($item_i['users_id_editor']) && $item_i['users_id_editor'] > 0) {
+//            echo "<div class='users_id_editor' id='users_id_editor_".$item_i['users_id_editor']."'>";
+//            $user->getFromDB($item_i['users_id_editor']);
+//            $userdata = getUserName($item_i['users_id_editor'], 2);
+//            echo sprintf(
+//               __('Last edited on %1$s by %2$s'),
+//               Html::convDateTime($item_i['date_mod']),
+//               $user->getLink()
+//            );
+//            echo Html::showToolTip($userdata["comment"],
+//                                   ['link' => $userdata['link']]);
+//            echo "</div>";
+//         }
+//         if ($item['type'] == 'Solution' && $item_i['status'] != CommonITILValidation::WAITING && $item_i['status'] != CommonITILValidation::NONE) {
+//            echo "<div class='users_id_approval' id='users_id_approval_".$item_i['users_id_approval']."'>";
+//            $user->getFromDB($item_i['users_id_approval']);
+//            $userdata = getUserName($item_i['users_id_editor'], 2);
+//            $message = __('%1$s on %2$s by %3$s');
+//            $action = $item_i['status'] == CommonITILValidation::ACCEPTED ? __('Accepted') : __('Refused');
+//            echo sprintf(
+//               $message,
+//               $action,
+//               Html::convDateTime($item_i['date_approval']),
+//               $user->getLink()
+//            );
+//            echo Html::showToolTip($userdata["comment"],
+//               ['link' => $userdata['link']]);
+//            echo "</div>";
+//         }
+
+         // show "is_private" icon
+         if (isset($item_i['is_private']) && $item_i['is_private']) {
+            echo "<div class='private'>".__('Private')."</div>";
+         }
+
+         echo "</div>"; // b_right
+
+//         if ($item['type'] == 'Document_Item') {
+//            if ($item_i['filename']) {
+//               $filename = $item_i['filename'];
+//               $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+//               echo "<img src='";
+//               if (empty($filename)) {
+//                  $filename = $item_i['name'];
+//               }
+//               if (file_exists(GLPI_ROOT."/pics/icones/$ext-dist.png")) {
+//                  echo $CFG_GLPI['root_doc']."/pics/icones/$ext-dist.png";
+//               } else {
+//                  echo "$pics_url/file.png";
+//               }
+//               echo "'/>&nbsp;";
+//
+//               echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
+//                  ."&tickets_id=".$the_ticket->getID()."' target='_blank'>$filename";
+//               if (Document::isImage($filename)) {
+//                  echo "<div class='timeline_img_preview'>";
+//                  echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
+//                     ."&tickets_id=".$the_ticket->getID()."&context=timeline'/>";
+//                  echo "</div>";
+//               }
+//               echo "</a>";
+//            }
+//            if ($item_i['link']) {
+//               echo "<a href='{$item_i['link']}' target='_blank'><i class='fa fa-external-link'></i>{$item_i['name']}</a>";
+//            }
+//            if (!empty($item_i['mime'])) {
+//               echo "&nbsp;(".$item_i['mime'].")";
+//            }
+//            echo "<span class='buttons'>";
+//            echo "<a href='".Document::getFormURLWithID($item_i['id'])."' class='edit_document fa fa-eye pointer' title='".
+//               _sx("button", "Show")."'>";
+//            echo "<span class='sr-only'>" . _sx('button', 'Show') . "</span></a>";
+//
+//            $doc = new Document();
+//            $doc->getFromDB($item_i['id']);
+//            if ($doc->can($item_i['id'], UPDATE)) {
+//               echo "<a href='".Ticket::getFormURL().
+//                  "?delete_document&documents_id=".$item_i['id'].
+//                  "&tickets_id=".$the_ticket->getID()."' class='delete_document fa fa-trash-o pointer' title='".
+//                  _sx("button", "Delete permanently")."'>";
+//               echo "<span class='sr-only'>" . _sx('button', 'Delete permanently')  . "</span></a>";
+//            }
+//            echo "</span>";
+//         }
+
+         echo "</div>"; // displayed_content
+         echo "</div>"; //end h_content
+
+         echo "</div>"; //end  h_info
+
+         $timeline_index++;
+
+         Plugin::doHook('post_show_item', ['item' => $obj, 'options' => $options]);
+
+      } // end foreach timeline
+
+      echo "<div class='break'></div>";
+
+      // recall ticket content (not needed in classic and splitted layout)
+      if (!CommonGLPI::isLayoutWithMain()) {
+
+         echo "<div class='h_item middle'>";
+
+         echo "<div class='h_info'>";
+         echo "<div class='h_date'><i class='fa fa-clock-o'></i>".Html::convDateTime($the_ticket->fields['date'])."</div>";
+         echo "<div class='h_user'>";
+
+         echo __('Requester');
+
+         echo "</div>"; // h_user
+         echo "</div>"; //h_info
+
+         echo "<div class='h_content TicketContent'>";
+
+         echo "<div class='b_right'>".sprintf(__("Ticket# %s description"), $the_ticket->getID())."</div>";
+
+         echo "<div class='ticket_title'>";
+         echo Html::setSimpleTextContent($the_ticket->fields['name']);
+         echo "</div>";
+
+         if ($CFG_GLPI["use_rich_text"]) {
+            echo "<div class='rich_text_container'>";
+            echo Html::setRichTextContent('', $the_ticket->fields['content'], '', true);
+            echo "</div>";
+         } else {
+            echo "<div>";
+            echo Toolbox::getHtmlToDisplay(Html::setSimpleTextContent($the_ticket->fields['content']));
+            echo "</div>";
+         }
+
+         echo "</div>"; // h_content TicketContent
+
+         echo "</div>"; // h_item middle
+
+         echo "<div class='break'></div>";
+      }
+
+      // end timeline
+      echo "</div>"; // h_item $user_position
+      echo "<script type='text/javascript'>$(function() {read_more();});</script>";
+   }
+
    /**
     * @see CommonGLPI::display()
     */
@@ -219,7 +600,7 @@ class PluginFormcreatorIssue extends CommonDBTM {
       }
 
       // Header if the item + link to the list of items
-      $this->showNavigationHeader($options);
+//      $this->showNavigationHeader($options);
 
       // retrieve associated tickets
       $options['_item'] = $item;
@@ -235,8 +616,8 @@ class PluginFormcreatorIssue extends CommonDBTM {
          //Tickets without form associated or single ticket for an answer
          echo "<div class='timeline_box'>";
          $rand = mt_rand();
-         $item->showTimelineForm($rand);
-         $item->showTimeline($rand);
+//         $item->showTimelineForm($rand);
+         self::showTimeline($item, $rand);
          echo "</div>";
       } else {
          // No ticket associated to this issue or multiple tickets
